@@ -1,0 +1,5 @@
+; $Id$
+name = Saved searches
+description = Allows users to save their current configuration of exposed filters for later use.
+dependencies = views jquery_form
+package = Views
