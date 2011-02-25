@@ -1,4 +1,3 @@
-; $Id$
 name = Views Saved Searches Subscriptions
 description = Allows users to subscribe to views saved searches and be notified when they are updated
 package = "Notifications"
