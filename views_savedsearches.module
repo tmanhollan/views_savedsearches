@@ -253,11 +253,16 @@ function views_savedsearches_save_search_form($form_state, $view) {
   unset($params['q']);
   $query = array();
   foreach ($params as $k => $v) {
-    if (drupal_strlen($k) > 0 && drupal_strlen($v) > 0) {
-      $query[] = $k .'='. $v;
+    if (is_array($v)) {
+      // @todo: handle such values at redirection
     }
-    elseif (drupal_strlen($v) > 0) {
-      $query[]= $v;
+    else {
+      if (drupal_strlen($k) > 0 && drupal_strlen($v) > 0) {
+        $query[] = $k .'='. $v;
+      }
+      elseif (drupal_strlen($v) > 0) {
+        $query[]= $v;
+      }
     }
   }
   if (!empty($query)) {
@@ -624,8 +629,15 @@ function _views_savedsearches_params_to_filters($view, $params) {
     $exposed = $view->get_exposed_input();
     if (!empty($exposed)) {
       foreach ($exposed as $key => $value) {
-        if (drupal_strlen($value) > 0) {
-          $filters[$key] = $value;
+        if (is_array($value)) {
+          if (!empty($value)) {
+            $filters[$key] = $value;
+          }
+        }
+        else {
+          if (drupal_strlen($value) > 0) {
+            $filters[$key] = $value;
+          }
         }
       }
     }
