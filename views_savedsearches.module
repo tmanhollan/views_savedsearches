@@ -664,8 +664,8 @@ function _views_savedsearches_configure_ahah($view_name) {
 
   if (!isset($required_things_added)) {
     drupal_add_js('misc/jquery.form.js');
-    drupal_add_js('misc/collapse.js', 'theme');
-    drupal_add_js(drupal_get_path('module', 'views_savedsearches') . '/views_savedsearches.js', 'module');
+    drupal_add_js('misc/collapse.js');
+    drupal_add_js(drupal_get_path('module', 'views_savedsearches') . '/views_savedsearches.js');
     drupal_add_js(
       array(
         'views_savedsearches' => array(
