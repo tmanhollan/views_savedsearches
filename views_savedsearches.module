@@ -397,7 +397,7 @@ function views_savedsearches_ahah($action) {
   $_POST = array();
 
   // Output.
-  $view = views_get_view($vid);
+  $view = views_get_view($view_name);
 
   $output = '';
   $output .= theme('status_messages');
@@ -787,7 +787,7 @@ function theme_views_savedsearches_list($variables) {
   else{
     $saved_searches = views_savedsearches_load_multiple($user->uid, $view->vid, $view->name);
   }
-  $options = _views_savedsearches_saved_searches_to_form_options($saved_searches, $view->get_path(), $current_view_matches_sid);
+  $options = _views_savedsearches_saved_searches_to_form_options($saved_searches, $view->get_url(), $current_view_matches_sid);
 
   // Display a list of saved searches (if there are any) and allow the user to
   // delete any of them.
