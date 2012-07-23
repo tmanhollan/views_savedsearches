@@ -27,7 +27,7 @@
   ViewsSavedSearches.bindings = function(view_name) {
     function ahahDeleteBeforeSubmit(formData, jqForm, options) {
       // Validate checkboxes: at least one must be checked.
-      if ($('div#view-'+ view_name +'-savedsearches-container div.views-savedsearches-list-ahah form:first :checkbox[@checked]').length == 0) {
+      if ($('div#view-'+ view_name +'-savedsearches-container div.views-savedsearches-list-ahah form:first input[type="checkbox"]:checked').length == 0) {
         alert(Drupal.t("You must select at least one saved search to be deleted!"));
         return false;
       }

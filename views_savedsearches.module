@@ -323,6 +323,7 @@ function views_savedsearches_delete_search_form($form, $form_state, $view, $opti
   // Save some properties about the current view.
   $form['variables']['#tree'] = TRUE;
   $form['variables']['vid'] = array('#type' => 'hidden', '#value' => $view->vid);
+  $form['variables']['view_name'] = array('#type' => 'hidden', '#value' => $view->name);
 
   $form['saved_collapse'] = array(
     '#type' => 'fieldset',
