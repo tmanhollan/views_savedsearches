@@ -8,7 +8,7 @@
  */
 
 /**
- * Implementation of hook_schema().
+ * Implements hook_schema().
  */
 function views_savedsearches_schema() {
   $schema['views_savedsearches'] = array(
@@ -62,14 +62,14 @@ function views_savedsearches_update_6101() {
 }
 
 /**
- * Implementation of hook_install().
+ * Implements hook_install().
  */
 function views_savedsearches_install() {
   // drupal_install_schema('views_savedsearches');
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function views_savedsearches_uninstall() {
   drupal_uninstall_schema('views_savedsearches');
