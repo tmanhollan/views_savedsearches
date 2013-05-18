@@ -1,5 +1,3 @@
-// $Id: views_savedsearches.js,v 1.5 2009/12/18 15:28:45 aronnovak Exp $
-
 (function ($) {
   var ViewsSavedSearches = ViewsSavedSearches || {};
 

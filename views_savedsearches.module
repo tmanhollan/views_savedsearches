@@ -1,6 +1,4 @@
 <?php
-// $Id: views_savedsearches.module,v 1.10 2010/01/14 13:48:24 aronnovak Exp $
-
 /**
  * @file
  * This module allows you to save your current configuration of exposed
@@ -176,7 +174,7 @@ function views_savedsearches_block_info() {
 function views_savedsearches_block_view($delta = '') {
   global $user;
   $block = array();
-  
+
   switch ($delta) {
     case 'views-savedsearches-per-user':
       $uid = (arg(0) == 'user' && is_numeric(arg(1))) ? arg(1) : $user->uid;
@@ -215,7 +213,7 @@ function views_savedsearches_views_pre_view(&$view) {
     if (empty($enabled_views[$view->name])) {
       return;
     }
-    
+
     $output = '';
     $output .= '<div id="view-' . drupal_clean_css_identifier($view->name) . '-savedsearches-container" class="views-savedsearches-container clearfix">';
     $output .= theme('views_savedsearches_container', array('view' => $view, 'views_filters_form_values' => $_GET));
@@ -244,7 +242,7 @@ function views_savedsearches_save_search_form($form, $form_state, $view) {
   $form['variables']['display'] = array('#type' => 'hidden', '#value' => $view->current_display);
   // This is needed for the non-AHAH form submit.
   $filters = _views_savedsearches_params_to_filters($view, $_GET);
-  
+
   $form['variables']['exposed_filters'] = array('#type' => 'value', '#value' => serialize($filters));
 
   $form['name'] = array(
@@ -465,7 +463,7 @@ function views_savedsearches_load_multiple($uid = NULL, $vid = NULL, $view_name 
   elseif ($vid > 0) {
     $query->condition('vid', $vid);
   }
-  
+
   if (isset($view_name) && $view_name != '') {
     $query->condition('view_name', $view_name);
   }
@@ -537,9 +535,9 @@ function views_savedsearches_delete($sid) {
  * @return
  *   A saved search id.
  */
- 
+
  // TODO: Werkt niet met views in code!
- 
+
 function views_savedsearches_save($saved_search) {
   if ($saved_search->sid && $saved_search->sid != 'new') {
       db_update('views_savedsearches')

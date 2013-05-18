@@ -1,5 +1,3 @@
-$Id: README.txt,v 1.7 2010/01/18 14:34:48 aronnovak Exp $
-
 Description
 -----------
 This module allows you to save your current configuration of exposed filters

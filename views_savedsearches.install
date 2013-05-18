@@ -1,6 +1,4 @@
 <?php
-// $Id: views_savedsearches.install,v 1.4 2010/01/14 13:48:24 aronnovak Exp $
-
 /**
  * @file
  * This module allows you to save your current configuration of exposed
