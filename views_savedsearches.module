@@ -534,10 +534,9 @@ function views_savedsearches_delete($sid) {
  *   A saved search object.
  * @return
  *   A saved search id.
+ *
+ * @todo does not work with views in code.
  */
-
- // TODO: Werkt niet met views in code!
-
 function views_savedsearches_save($saved_search) {
   if ($saved_search->sid && $saved_search->sid != 'new') {
       db_update('views_savedsearches')
