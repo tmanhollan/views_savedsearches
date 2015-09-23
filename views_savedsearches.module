@@ -593,23 +593,39 @@ function _views_savedsearches_filters_to_params($filters) {
     foreach ($filters as $filter_name => $filter_value) {
       // Distinction between multiple-value filters and single-value filters.
       if (is_array($filter_value)) {
-        foreach ($filter_value as $key => $value) {
-          if (drupal_strlen($query) > 0) {
-            $query .= '&';
+        if (array_key_exists('min', $filter_value) || array_key_exists('max', $filter_value)) {
+          // Numeric range-style filter 
+          if (!is_null($filter_value['min']) && $filter_value['min'] != '') {
+            if (drupal_strlen($query) > 0) {
+              $query .= '&';
+            }
+            $query .= drupal_urlencode($filter_name) . drupal_urlencode('[min]') . '=' . $filter_value['min'];
           }
-          if (!is_array($value)) {
-            $query .= drupal_urlencode($filter_name) . drupal_urlencode('[]') .'='. drupal_urlencode($value);
+          if (!is_null($filter_value['max']) && $filter_value['max'] != '') {
+            if (drupal_strlen($query) > 0) {
+              $query .= '&';
+            }
+            $query .= drupal_urlencode($filter_name) . drupal_urlencode('[max]') . '=' . $filter_value['max'];
           }
-          else {
-            // Date-style parameter, like date_filter[value][date]=2009-05-11 in the URL encoded
-            $arr = drupal_urlencode('['. $key .']');
-            $open = drupal_urlencode('[');
-            $close = drupal_urlencode(']');
-            foreach ($value as $k => $v) {
-              if (drupal_strlen($query) > 0) {
-                $query .= '&';
+        } else {
+          foreach ($filter_value as $key => $value) {
+            if (drupal_strlen($query) > 0) {
+              $query .= '&';
+            }
+            if (!is_array($value)) {
+              $query .= drupal_urlencode($filter_name) . drupal_urlencode('[]') .'='. drupal_urlencode($value);
+            }
+            else {
+              // Date-style parameter, like date_filter[value][date]=2009-05-11 in the URL encoded
+              $arr = drupal_urlencode('['. $key .']');
+              $open = drupal_urlencode('[');
+              $close = drupal_urlencode(']');
+              foreach ($value as $k => $v) {
+                if (drupal_strlen($query) > 0) {
+                  $query .= '&';
+                }
+                $query .= $filter_name . $arr . $open . $k . $close . '=' . $v;
               }
-              $query .= $filter_name . $arr . $open . $k . $close . '=' . $v;
             }
           }
         }
