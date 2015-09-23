@@ -26,6 +26,12 @@ function views_savedsearches_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
+      'view_name' => array(
+        'type' => 'varchar',
+        'length' => '32',
+        'default' => '',
+        'not null' => FALSE,
+      ),
       'display' => array(
         'type' => 'varchar',
         'length' => '32',
@@ -50,6 +56,60 @@ function views_savedsearches_schema() {
 function views_savedsearches_update_6101() {
   $ret = array();
   db_add_field($ret, 'views_savedsearches', 'display', array('type' => 'varchar', 'length' => '32', 'not null' => TRUE, 'default' => ''));
+  return $ret;
+}
+
+/**
+ * Implementation of hook_update_n()
+ *  - Add view_name field to database schema
+ *  - Update existing sids with the view_name that matches the vid
+ *  - For any sids that were saved on default views (they'll have vid = 0), attempt to match using the available info
+ *    Note, this will not be entirely accurate. It will get the view_name where the display_name and filters match, but
+ *    it is possible for more than one view to have the same display name and filters. In that case, we'll just use
+ *    the first match.
+ */
+function views_savedsearches_update_6102() {
+  $ret = array();
+  db_add_field($ret, 'views_savedsearches', 'view_name', array('type' => 'varchar', 'length' => '32', 'default' => '', 'not null' => FALSE));
+  $ret[] = update_sql('UPDATE {views_savedsearches} s INNER JOIN {views_view} v ON s.vid = v.vid SET s.view_name = v.name WHERE s.vid <> 0');
+  // Attempt to match up any sids that were previously saved on coded views (those with vid = 0).
+  $searches = array();
+  $result = db_query('SELECT sid, display, filters FROM {views_savedsearches} WHERE vid = 0');
+  while ($search = db_fetch_array($result)) {
+    $search['filters'] = unserialize($search['filters']);
+    $searches[] = $search;
+  }
+  module_load_include('inc', 'views', 'includes/view');
+  $default_views = views_discover_default_views(TRUE);
+  $saved_views = array_filter(variable_get('views_savedsearches', array()));
+  $views = array_intersect_key($default_views, $saved_views);
+  ksort($views);
+  foreach ($searches as $search) {
+    $match = FALSE;
+    foreach ($views as $view) {
+      if (!empty($view->display[$search['display']])) {
+        $view_filters = array();
+        foreach ($search['filters'] as $key => $filter) {
+          foreach ($view->get_items('filter', $search['display']) as $view_filter) {
+            if ($view_filter['exposed'] && $view_filter['expose']['identifier'] == $key) {
+              $view_filters[$key] = $filter;
+            }
+          }
+        }
+        if ($view_filters == $search['filters']) {
+          if (!$match) {
+            $ret[] = update_sql("UPDATE {views_savedsearches} SET view_name = '" . $view->name . "' WHERE sid = " . $search['sid']);
+            $match = $view->name;
+          } else {
+            drupal_set_message('Saved search with sid = ' . $search['sid'] . ' has been matched to ' . $match . ' but also matches the filters for view ' . $view->name, 'warning');
+          }
+        }
+      }
+    }
+    if ($match === FALSE) {
+      drupal_set_message('Warning, no matching view was found for sid ' . $search['sid'], 'warning');
+    }
+  }
   return $ret;
 }
 

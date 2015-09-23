@@ -26,11 +26,12 @@ function notifications_views_savedsearches_form_alter(&$form, $form_state, $form
     $view = views_get_current_view();
     if (empty($view)) {
       // It's an AHAH-request then
-      $view = views_get_view($form['variables']['vid']['#value']);
+      $view = views_get_view($form['variables']['view_name']['#value']);
     }
-    $saved_searches = views_savedsearches_load_multiple($user->uid, $view->vid);
+    $saved_searches = views_savedsearches_load_multiple($user->uid, $view->name);
     $links = array();
     foreach ($saved_searches as  $k => $option) {
+      $view->set_display($option->display);
       $link = '';
       if (isset($sids[$option->sid])) {
         $link = notifications_get_link('unsubscribe', array('sid' => $sids[$option->sid], 'signed' => TRUE, 'absolute' => TRUE, 'destination' => $view->get_path()));
@@ -81,9 +82,8 @@ function notifications_views_savedsearches_notifications($op, &$arg0, $arg1 = NU
       $subs = &$arg0;
       if ($subs->event_type == 'savedsearch') {
         if (!empty($subs->fields['sid'])) {
-          $data = db_fetch_row(db_query("SELECT name, vid FROM {views_savedsearches} WHERE sid = %d", $subs->fields['sid']));
-          $viewname = db_result(db_query("SELECT name FROM {views_view} WHERE vid = %d", $data['vid']));
-          $subs->names['sid'] = t('Views Saved Search: %name, belongs to: %view', array('%name' => $data['name'], '%view' => $viewname));
+          $data = db_fetch_row(db_query("SELECT name, view_name FROM {views_savedsearches} WHERE sid = %d", $subs->fields['sid']));
+          $subs->names['sid'] = t('Views Saved Search: %name, belongs to: %view', array('%name' => $data['name'], '%view' => $data['view_name']));
         }
       }
       break;
@@ -157,8 +157,7 @@ function notifications_views_savedsearches_cron() {
       db_query("INSERT INTO {notifications_views_savedsearches_seen} VALUES (%d)", $subscription['sid']);
     }
     $vs = views_savedsearches_load($subscription['sid']);
-    $view_name = db_result(db_query("SELECT name FROM {views_view} WHERE vid = %d", $vs->vid));
-    $view = views_get_view($view_name);
+    $view = views_get_view($vs->view_name);
 
     if (is_object($view) && is_object($vs)) {
       if ($view instanceof view) {
