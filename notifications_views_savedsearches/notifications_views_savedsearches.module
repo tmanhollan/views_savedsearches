@@ -162,6 +162,10 @@ function notifications_views_savedsearches_cron() {
     if (is_object($view) && is_object($vs)) {
       if ($view instanceof view) {
 
+        // Examine the _complete_ resultset of the display that was saved, rather than the first page of the default display
+        $view->set_display($vs->display);
+        $view->set_items_per_page(0);
+
         // Apply $vs->filters
         $view->set_exposed_input($vs->filters);
 
