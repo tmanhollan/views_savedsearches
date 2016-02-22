@@ -192,12 +192,13 @@ function views_savedsearches_block($op = 'list', $delta = 0, $edit = array()) {
 // Views hooks.
 
 /**
- * Implementation of hook_views_pre_view().
+ * Implementation of hook_views_post_execute().
+ * Renders the views_savedsearches form in view->attachment_before if the view is enabled and has executed successfully
  */
-function views_savedsearches_views_pre_view(&$view) {
+function views_savedsearches_views_post_execute(&$view) {
   if (user_access('use views savedsearch')) {
     $enabled_views = variable_get('views_savedsearches', array());
-    if (empty($enabled_views[$view->name])) {
+    if (empty($enabled_views[$view->name]) || empty($view->result)) {
       return;
     }
 
