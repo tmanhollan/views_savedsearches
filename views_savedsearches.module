@@ -527,7 +527,7 @@ function views_savedsearches_save($saved_search) {
     );
   }
   else {
-    $saved_search->sid = db_result(db_query('SELECT MAX(sid) + 1 from {views_savedsearches}'));
+    $saved_search->sid = db_result(db_query('SELECT MAX(sid) from {views_savedsearches}')) + 1;
     $result = db_query("INSERT INTO {views_savedsearches} (sid, uid, vid, view_name, display, name, filters) VALUES(%d, %d, %d, '%s', '%s', '%s', '%s')",
       $saved_search->sid,
       $saved_search->uid,
