@@ -544,6 +544,7 @@ function views_savedsearches_save($saved_search) {
 
 /**
  * Get a saved search id by a set of filters.
+ * Deprecated in favor of views_savedsearches_find_by_user_input
  *
  * @param $filters
  *   An array container filter name - filter value(s) pairs.
@@ -564,6 +565,32 @@ function views_savedsearches_sid_by_filters($filters, $uid = FALSE) {
     }
   }
   return ($sid === FALSE ? -1 : $sid);
+}
+
+/**
+ * Find a matching saved search for a given user and view by
+ * comparing the filter input with the saved filter values.
+ *
+ * Replaces views_savedsearches_sid_by_filters to avoid missed
+ * matches due to differing order between the two arrays.
+ *
+ * @param $filters
+ *   An array container filter name - filter value(s) pairs.
+ * @param $uid
+ *   User id to filter by
+ * @param $view_name
+ *   The machine name of the view
+ * @return
+ *   A saved search id, or -1 if no match is found.
+ */
+function views_savedsearches_find_by_user_input($filters, $uid, $view_name) {
+  $savedsearches = views_savedsearches_load_multiple($uid, $view_name);
+  foreach ($savedsearches as $sid => $vs) {
+    if ($filters == $vs->filters) {
+      return $sid;
+    }
+  }
+  return -1;
 }
 
 
@@ -804,7 +831,7 @@ function theme_views_savedsearches_container($view, $views_filters_form_values) 
   // Add the CSS and see if the current view matches a sid.
   drupal_add_css(drupal_get_path('module', 'views_savedsearches') .'/views_savedsearches.css', 'module');
   $view_filters = _views_savedsearches_params_to_filters($view, $views_filters_form_values);
-  $current_view_matches_sid = views_savedsearches_sid_by_filters($view_filters, $user->uid);
+  $current_view_matches_sid = views_savedsearches_find_by_user_input($view_filters, $user->uid, $view->name);
 
   // The list (also delete saved search form).
   $output .= '<div class="views-savedsearches-list-ahah">';
