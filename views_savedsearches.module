@@ -519,7 +519,7 @@ function views_savedsearches_delete($sid) {
  */
 function views_savedsearches_save($saved_search) {
   if ($saved_search->sid && $saved_search->sid != 'new') {
-    $result = db_query("UPDATE {views_savedsearches} SET uid = %d, vid = %d, view_name = '%s', name = '%s', filters = '%s WHERE sid = %d",
+    $result = db_query("UPDATE {views_savedsearches} SET uid = %d, vid = %d, view_name = '%s', name = '%s', filters = '%s' WHERE sid = %d",
       $saved_search->uid,
       $saved_search->vid,
       $saved_search->view_name,
@@ -622,7 +622,7 @@ function _views_savedsearches_filters_to_params($filters) {
       // Distinction between multiple-value filters and single-value filters.
       if (is_array($filter_value)) {
         if (array_key_exists('min', $filter_value) || array_key_exists('max', $filter_value)) {
-          // Numeric range-style filter 
+          // Numeric range-style filter
           if (!is_null($filter_value['min']) && $filter_value['min'] != '') {
             if (drupal_strlen($query) > 0) {
               $query .= '&';
