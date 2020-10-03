@@ -524,6 +524,7 @@ function views_savedsearches_save($saved_search) {
       $saved_search->vid,
       $saved_search->view_name,
       $saved_search->name,
+      is_array($saved_search->filters) ? serialize($saved_search->filters) : $saved_search->filters,
       $saved_search->sid
     );
   }
